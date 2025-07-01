@@ -55,6 +55,7 @@ export async function GET(
           id: teamMember.meetingSeries.id,
           title: teamMember.meetingSeries.title,
           description: teamMember.meetingSeries.description,
+          status: teamMember.meetingSeries.status,
           dateRangeStart: teamMember.meetingSeries.dateRangeStart,
           dateRangeEnd: teamMember.meetingSeries.dateRangeEnd,
           meetingDuration: teamMember.meetingSeries.meetingDuration,
