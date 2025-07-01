@@ -1,36 +1,31 @@
-import nodemailer from 'nodemailer'
+import sgMail from '@sendgrid/mail'
 
 interface EmailConfig {
   to: string
+  from: string
   subject: string
   html: string
 }
 
 class EmailService {
-  private transporter: nodemailer.Transporter
-
   constructor() {
-    this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: false,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-      }
-    })
+    if (process.env.SENDGRID_API_KEY) {
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+    } else {
+      console.warn('SENDGRID_API_KEY is not set. Email sending will be disabled.')
+    }
   }
 
-  async sendEmail({ to, subject, html }: EmailConfig): Promise<void> {
+  async sendEmail({ to, from, subject, html }: EmailConfig): Promise<void> {
+    if (!process.env.SENDGRID_API_KEY) {
+      console.log('Email sending disabled. Mocking email send.')
+      return
+    }
+
     try {
-      await this.transporter.sendMail({
-        from: process.env.SMTP_USER,
-        to,
-        subject,
-        html
-      })
+      await sgMail.send({ to, from, subject, html })
     } catch (error) {
-      console.error('Error sending email:', error)
+      console.error('Error sending email with SendGrid:', error)
       throw new Error('Failed to send email')
     }
   }
@@ -200,6 +195,7 @@ class EmailService {
 
     await this.sendEmail({
       to,
+      from: process.env.SENDGRID_FROM_EMAIL!,
       subject: `Availability Request: ${meetingTitle}`,
       html
     })
@@ -224,6 +220,7 @@ class EmailService {
 
     await this.sendEmail({
       to,
+      from: process.env.SENDGRID_FROM_EMAIL!,
       subject: `Meetings Scheduled: ${meetingTitle}`,
       html
     })
