@@ -45,6 +45,7 @@ model MeetingSeries {
   teamMembers       TeamMember[]
   meetings          Meeting[]
   availabilities    Availability[]
+  meetingSchedules  MeetingSchedules?
 
   @@map("meeting_series")
 }
@@ -59,6 +60,9 @@ model TeamMember {
   inviteToken     String?       @unique
   hasResponded    Boolean       @default(false)
   createdAt       DateTime      @default(now())
+
+  // Relations
+  votes           ScheduleVote[]
 
   @@unique([userId, meetingSeriesId])
   @@map("team_members")
@@ -91,4 +95,38 @@ model Availability {
   createdAt       DateTime      @default(now())
 
   @@map("availabilities")
+}
+
+model MeetingSchedules {
+  id              String        @id @default(cuid())
+  meetingSeriesId String        @unique
+  meetingSeries   MeetingSeries @relation(fields: [meetingSeriesId], references: [id])
+  option1         Json          // Contains meeting times and reasoning
+  option2         Json          // Contains meeting times and reasoning  
+  option3         Json          // Contains meeting times and reasoning
+  status          String        @default("voting") // voting, completed
+  winningOption   Int?          // 1, 2, or 3
+  finalScores     Json?         // Vote tallies
+  generatedAt     DateTime      @default(now())
+  createdAt       DateTime      @default(now())
+
+  // Relations
+  votes           ScheduleVote[]
+
+  @@map("meeting_schedules")
+}
+
+model ScheduleVote {
+  id                String          @id @default(cuid())
+  teamMemberId      String
+  teamMember        TeamMember      @relation(fields: [teamMemberId], references: [id])
+  meetingSchedulesId String
+  meetingSchedules  MeetingSchedules @relation(fields: [meetingSchedulesId], references: [id])
+  firstChoice       Int             // 1, 2, or 3
+  secondChoice      Int             // 1, 2, or 3
+  thirdChoice       Int             // 1, 2, or 3
+  createdAt         DateTime        @default(now())
+
+  @@unique([teamMemberId, meetingSchedulesId])
+  @@map("schedule_votes")
 }

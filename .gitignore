@@ -41,3 +41,4 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
+indigo-cirrus-410802-b5214cc92347.json

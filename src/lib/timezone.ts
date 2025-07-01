@@ -148,3 +148,75 @@ export function findConsecutiveDaySlots(
 export function formatTimeInTimezone(date: Date, timezone: string): string {
   return format(convertFromUtc(date, timezone), 'MMM d, yyyy h:mm a zzz', { timeZone: timezone })
 }
+
+export interface OptimalMeetingTime {
+  startDateTime: Date
+  endDateTime: Date
+  attendeeCount: number
+}
+
+export interface MeetingOptions {
+  duration: number
+  numberOfMeetings: number
+  consecutiveDays: boolean
+  dateRangeStart: Date
+  dateRangeEnd: Date
+}
+
+export function findCommonTimeBlocks(
+  availabilities: AvailabilitySlot[],
+  durationMinutes: number
+): TimeBlock[] {
+  if (availabilities.length === 0) return []
+  
+  const uniqueUsers = new Set(availabilities.map(av => av.userId))
+  return findOverlappingTimeBlocks(availabilities, durationMinutes, uniqueUsers.size)
+}
+
+export function findOptimalMeetingTimes(
+  availabilities: Array<{
+    user?: { id: string }
+    userId?: string
+    startTime: Date
+    endTime: Date
+    timezone: string
+  }>,
+  options: MeetingOptions
+): OptimalMeetingTime[] {
+  // Convert availability data to the expected format
+  const slots: AvailabilitySlot[] = availabilities
+    .map(avail => ({
+      userId: avail.user?.id || avail.userId || '',
+      startTime: avail.startTime,
+      endTime: avail.endTime,
+      timezone: avail.timezone
+    }))
+    .filter(slot => slot.userId !== '')
+
+  const timeBlocks = findCommonTimeBlocks(slots, options.duration)
+  
+  // Filter blocks within date range
+  const filteredBlocks = timeBlocks.filter(block => 
+    isAfter(block.start, options.dateRangeStart) && 
+    isBefore(block.start, options.dateRangeEnd)
+  )
+
+  // Convert to optimal meeting times format
+  const optimalTimes: OptimalMeetingTime[] = filteredBlocks.map(block => ({
+    startDateTime: block.start,
+    endDateTime: block.end,
+    attendeeCount: slots.filter(slot => 
+      slot.startTime <= block.start && slot.endTime >= block.end
+    ).length
+  }))
+
+  // Sort by attendee count (descending) and then by date
+  optimalTimes.sort((a, b) => {
+    if (a.attendeeCount !== b.attendeeCount) {
+      return b.attendeeCount - a.attendeeCount
+    }
+    return a.startDateTime.getTime() - b.startDateTime.getTime()
+  })
+
+  return optimalTimes.slice(0, options.numberOfMeetings)
+}

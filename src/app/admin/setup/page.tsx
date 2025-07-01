@@ -85,9 +85,56 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Save to database and send invites
-    console.log('Form submitted:', formData)
-    alert('Meeting series created! Team members will receive email invitations.')
+    setLoading(true)
+    
+    try {
+      const response = await fetch('/api/meeting-series', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: formData.title,
+          description: formData.description,
+          adminName: formData.adminName,
+          adminEmail: formData.adminEmail,
+          adminTimezone: formData.adminTimezone,
+          dateRangeStart: formData.dateRangeStart,
+          dateRangeEnd: formData.dateRangeEnd,
+          teamEmails: formData.teamEmails,
+          meetingDuration: 210, // 3.5 hours
+          numberOfMeetings: 3,
+          consecutiveDays: true
+        })
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        alert(`Meeting series "${formData.title}" created successfully! Team members will receive email invitations to select their availability.`)
+        // Reset form
+        setFormData({
+          title: '',
+          description: '',
+          adminEmail: '',
+          adminName: '',
+          adminTimezone: '',
+          teamEmails: '',
+          dateRangeStart: '',
+          dateRangeEnd: '',
+          aiSuggestion: ''
+        })
+        setStep(1)
+        setAiSuggestion(null)
+      } else {
+        alert(`Error creating meeting series: ${result.error}`)
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error)
+      alert('Failed to create meeting series. Please try again.')
+    }
+    
+    setLoading(false)
   }
 
   const timezones = [
@@ -138,7 +185,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                     name="title"
                     value={formData.title}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
                     placeholder="Q1 2024 Quarterly Review"
                     required
                   />
@@ -153,7 +200,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                     value={formData.description}
                     onChange={handleInputChange}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
                     placeholder="Three consecutive days of strategic planning and team alignment sessions"
                   />
                 </div>
@@ -167,7 +214,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                     name="adminName"
                     value={formData.adminName}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
                     required
                   />
                 </div>
@@ -181,7 +228,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                     name="adminEmail"
                     value={formData.adminEmail}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
                     required
                   />
                 </div>
@@ -194,7 +241,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                     name="adminTimezone"
                     value={formData.adminTimezone}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
                     required
                   >
                     <option value="">Select your timezone</option>
@@ -217,29 +264,11 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
             {step === 2 && (
               <div className="space-y-6">
                 <div className="bg-blue-50 p-4 rounded-md">
-                  <h3 className="text-lg font-medium text-blue-900 mb-2">AI Assistant</h3>
-                  <p className="text-blue-800 mb-4">
-                    Let AI help you choose the optimal date range for your meetings based on your requirements.
+                  <h3 className="text-lg font-medium text-blue-900 mb-2">Date Range Selection</h3>
+                  <p className="text-blue-800">
+                    Choose a date range when your team meetings could be scheduled. Team members will select their availability within this range, and AI will analyze all responses to suggest optimal meeting times.
                   </p>
-                  <button
-                    type="button"
-                    onClick={getAiDateSuggestion}
-                    disabled={loading || !formData.title || !formData.adminTimezone}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {loading ? 'Getting AI Suggestion...' : 'Get AI Date Suggestion'}
-                  </button>
                 </div>
-
-                {aiSuggestion && (
-                  <div className="bg-green-50 p-4 rounded-md">
-                    <h4 className="font-medium text-green-900 mb-2">AI Recommendation</h4>
-                    <p className="text-green-800 mb-3">{aiSuggestion.reasoning}</p>
-                    <div className="text-sm text-green-700">
-                      <p>Suggested Range: {aiSuggestion.startDate} to {aiSuggestion.endDate}</p>
-                    </div>
-                  </div>
-                )}
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -251,7 +280,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                       name="dateRangeStart"
                       value={formData.dateRangeStart}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
                       required
                     />
                   </div>
@@ -264,11 +293,27 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                       name="dateRangeEnd"
                       value={formData.dateRangeEnd}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
                       required
                     />
                   </div>
                 </div>
+
+                <button
+                  type="button"
+                  onClick={getAiDateSuggestion}
+                  disabled={loading}
+                  className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 disabled:opacity-50"
+                >
+                  {loading ? 'Getting Suggestion...' : 'Get AI Date Suggestion'}
+                </button>
+
+                {aiSuggestion && (
+                  <div className="bg-indigo-50 p-4 rounded-md">
+                    <h4 className="font-medium text-indigo-900 mb-2">AI Suggestion</h4>
+                    <p className="text-indigo-800 text-sm">{aiSuggestion.reasoning}</p>
+                  </div>
+                )}
 
                 <div className="flex gap-4">
                   <button
@@ -300,7 +345,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                     value={formData.teamEmails}
                     onChange={handleInputChange}
                     rows={5}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
                     placeholder="Enter team member emails (one per line):
 john@company.com
 sarah@company.com
@@ -332,9 +377,10 @@ mike@company.com"
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors"
+                    disabled={loading}
+                    className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    Create Meeting Series
+                    {loading ? 'Creating...' : 'Create Meeting Series'}
                   </button>
                 </div>
               </div>

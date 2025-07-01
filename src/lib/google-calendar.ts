@@ -1,6 +1,7 @@
-// Temporarily disabled for deployment
-// import { google } from 'googleapis'
-// const calendar = google.calendar('v3')
+import { google } from 'googleapis'
+import { JWT } from 'google-auth-library'
+
+const calendar = google.calendar('v3')
 
 export interface CalendarEvent {
   summary: string
@@ -27,12 +28,38 @@ export interface CalendarEvent {
 }
 
 class GoogleCalendarService {
+  private auth: JWT
+
+  constructor() {
+    const serviceAccountEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL
+    const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\n/g, '\n')
+
+    if (!serviceAccountEmail || !privateKey) {
+      console.warn('Google Calendar service account credentials are not set. Calendar integration will be disabled.')
+      this.auth = null as any
+    } else {
+      this.auth = new google.auth.JWT(
+        serviceAccountEmail,
+        undefined,
+        privateKey,
+        ['https://www.googleapis.com/auth/calendar']
+      )
+    }
+  }
+
   async createEvent(eventData: CalendarEvent): Promise<string> {
-    try {
-      // TODO: Implement Google Calendar integration
-      // For now, return a mock event ID
-      console.log('Creating calendar event:', eventData)
+    if (!this.auth) {
+      console.log('Calendar integration disabled. Mocking event creation.')
       return 'mock-event-id-' + Date.now()
+    }
+
+    try {
+      const response = await calendar.events.insert({
+        auth: this.auth,
+        calendarId: 'primary', // Or a specific calendar ID
+        requestBody: eventData,
+      })
+      return response.data.id!
     } catch (error) {
       console.error('Error creating calendar event:', error)
       throw new Error('Failed to create calendar event')
@@ -40,9 +67,14 @@ class GoogleCalendarService {
   }
 
   async updateEvent(eventId: string, eventData: Partial<CalendarEvent>): Promise<void> {
+    if (!this.auth) return
     try {
-      // TODO: Implement Google Calendar update
-      console.log('Updating calendar event:', eventId, eventData)
+      await calendar.events.update({
+        auth: this.auth,
+        calendarId: 'primary',
+        eventId,
+        requestBody: eventData,
+      })
     } catch (error) {
       console.error('Error updating calendar event:', error)
       throw new Error('Failed to update calendar event')
@@ -50,9 +82,13 @@ class GoogleCalendarService {
   }
 
   async deleteEvent(eventId: string): Promise<void> {
+    if (!this.auth) return
     try {
-      // TODO: Implement Google Calendar delete
-      console.log('Deleting calendar event:', eventId)
+      await calendar.events.delete({
+        auth: this.auth,
+        calendarId: 'primary',
+        eventId,
+      })
     } catch (error) {
       console.error('Error deleting calendar event:', error)
       throw new Error('Failed to delete calendar event')
@@ -83,7 +119,12 @@ class GoogleCalendarService {
         displayName: attendee.name
       })),
       reminders: {
-        useDefault: false
+        useDefault: false,
+        overrides: [
+          { method: 'email', minutes: 24 * 60 },
+          { method: 'popup', minutes: 60 },
+          { method: 'popup', minutes: 10 },
+        ],
       }
     }
   }
