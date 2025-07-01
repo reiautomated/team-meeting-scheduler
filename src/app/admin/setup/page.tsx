@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { generateObject } from 'ai'
-import { openai } from '@ai-sdk/openai'
+// import { generateObject } from 'ai'
+// import { openai } from '@ai-sdk/openai'
 import { z } from 'zod'
 
 const DateRangeSchema = z.object({
@@ -36,35 +36,36 @@ export default function AdminSetup() {
 
   const getAiDateSuggestion = async () => {
     setLoading(true)
-    try {
-      const { object } = await generateObject({
-        model: openai('gpt-4o-mini'),
-        schema: DateRangeSchema,
-        prompt: `You are helping schedule quarterly team meetings. Based on the following information, suggest an optimal date range for scheduling 3 consecutive days of 3.5-hour meetings:
+    // TODO: Re-enable AI feature after fixing dependency issues.
+    // try {
+    //   const { object } = await generateObject({
+    //     model: openai('gpt-4o-mini'),
+    //     schema: DateRangeSchema,
+    //     prompt: `You are helping schedule quarterly team meetings. Based on the following information, suggest an optimal date range for scheduling 3 consecutive days of 3.5-hour meetings:
 
-Meeting Title: ${formData.title}
-Description: ${formData.description}
-Current Date: ${new Date().toISOString().split('T')[0]}
-Admin Timezone: ${formData.adminTimezone}
+    // Meeting Title: ${formData.title}
+    // Description: ${formData.description}
+    // Current Date: ${new Date().toISOString().split('T')[0]}
+    // Admin Timezone: ${formData.adminTimezone}
 
-Consider:
-- Avoiding major holidays
-- Quarterly spacing (every 3 months)
-- Business days preferred
-- 2-3 week notice period for team coordination
+    // Consider:
+    // - Avoiding major holidays
+    // - Quarterly spacing (every 3 months)
+    // - Business days preferred
+    // - 2-3 week notice period for team coordination
 
-Provide a 2-3 week window where the meetings could be scheduled, starting about 3-4 weeks from now.`
-      })
+    // Provide a 2-3 week window where the meetings could be scheduled, starting about 3-4 weeks from now.`
+    //   })
       
-      setAiSuggestion(object)
-      setFormData({
-        ...formData,
-        dateRangeStart: object.startDate,
-        dateRangeEnd: object.endDate,
-        aiSuggestion: object.reasoning
-      })
-    } catch (error) {
-      console.error('AI suggestion failed:', error)
+    //   setAiSuggestion(object)
+    //   setFormData({
+    //     ...formData,
+    //     dateRangeStart: object.startDate,
+    //     dateRangeEnd: object.endDate,
+    //     aiSuggestion: object.reasoning
+    //   })
+    // } catch (error) {
+    //   console.error('AI suggestion failed:', error)
       // Fallback to mock suggestion if AI fails
       const mockSuggestion = {
         startDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -79,7 +80,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
         dateRangeEnd: mockSuggestion.endDate,
         aiSuggestion: mockSuggestion.reasoning
       })
-    }
+    // }
     setLoading(false)
   }
 
@@ -185,7 +186,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                     name="title"
                     value={formData.title}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-600"
                     placeholder="Q1 2024 Quarterly Review"
                     required
                   />
@@ -200,7 +201,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                     value={formData.description}
                     onChange={handleInputChange}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-600"
                     placeholder="Three consecutive days of strategic planning and team alignment sessions"
                   />
                 </div>
@@ -214,7 +215,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                     name="adminName"
                     value={formData.adminName}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-600"
                     required
                   />
                 </div>
@@ -228,7 +229,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                     name="adminEmail"
                     value={formData.adminEmail}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-600"
                     required
                   />
                 </div>
@@ -241,7 +242,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                     name="adminTimezone"
                     value={formData.adminTimezone}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-600"
                     required
                   >
                     <option value="">Select your timezone</option>
@@ -280,7 +281,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                       name="dateRangeStart"
                       value={formData.dateRangeStart}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-600"
                       required
                     />
                   </div>
@@ -293,7 +294,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                       name="dateRangeEnd"
                       value={formData.dateRangeEnd}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-600"
                       required
                     />
                   </div>
@@ -345,7 +346,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                     value={formData.teamEmails}
                     onChange={handleInputChange}
                     rows={5}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-600"
                     placeholder="Enter team member emails (one per line):
 john@company.com
 sarah@company.com
