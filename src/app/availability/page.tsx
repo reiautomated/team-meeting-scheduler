@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { format, addDays, startOfDay, addMinutes, isSameDay } from 'date-fns'
-import { convertFromUtc, convertToUtc } from '@/lib/timezone'
+import { useState, useEffect, useCallback } from 'react'
+import { format, addDays, startOfDay, addMinutes } from 'date-fns'
+import { convertToUtc } from '@/lib/timezone'
 
 interface TimeSlot {
   start: Date
@@ -16,10 +16,6 @@ export default function AvailabilityPage() {
     email: '',
     timezone: ''
   })
-  const [dateRange, setDateRange] = useState({
-    start: new Date(),
-    end: addDays(new Date(), 14)
-  })
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([])
   const [selectedSlots, setSelectedSlots] = useState<Set<string>>(new Set())
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -30,11 +26,7 @@ export default function AvailabilityPage() {
     'Australia/Sydney', 'Pacific/Auckland'
   ]
 
-  useEffect(() => {
-    generateTimeSlots()
-  }, [currentDate, userInfo.timezone])
-
-  const generateTimeSlots = () => {
+  const generateTimeSlots = useCallback(() => {
     if (!userInfo.timezone) return
 
     const slots: TimeSlot[] = []
@@ -55,7 +47,11 @@ export default function AvailabilityPage() {
     }
     
     setTimeSlots(slots)
-  }
+  }, [currentDate, userInfo.timezone])
+
+  useEffect(() => {
+    generateTimeSlots()
+  }, [generateTimeSlots])
 
   const handleUserInfoChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setUserInfo({

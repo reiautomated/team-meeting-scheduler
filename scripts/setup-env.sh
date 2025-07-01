@@ -25,6 +25,7 @@ if [ -f "$ENV_FILE" ]; then
     source "$ENV_FILE"
     
     echo "✅ GITHUB_TOKEN: $([ -n "$GITHUB_TOKEN" ] && echo "Set" || echo "❌ Missing")"
+    echo "$([ -n "$VERCEL_TOKEN" ] && [[ "$VERCEL_TOKEN" != *"your-vercel"* ]] && echo "✅" || echo "❌") VERCEL_TOKEN: $([ -n "$VERCEL_TOKEN" ] && echo "Set" || echo "Missing")"
     echo "$([ -n "$DATABASE_URL" ] && [[ "$DATABASE_URL" != *"username:password"* ]] && echo "✅" || echo "❌") DATABASE_URL: $([ -n "$DATABASE_URL" ] && echo "Set" || echo "Missing")"
     echo "$([ -n "$OPENAI_API_KEY" ] && [[ "$OPENAI_API_KEY" != *"your-openai"* ]] && echo "✅" || echo "❌") OPENAI_API_KEY: $([ -n "$OPENAI_API_KEY" ] && echo "Set" || echo "Missing")"
     echo "$([ -n "$ANTHROPIC_API_KEY" ] && [[ "$ANTHROPIC_API_KEY" != *"your-anthropic"* ]] && echo "✅" || echo "❌") ANTHROPIC_API_KEY: $([ -n "$ANTHROPIC_API_KEY" ] && echo "Set" || echo "Missing")"

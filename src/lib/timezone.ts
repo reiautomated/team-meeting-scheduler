@@ -1,5 +1,5 @@
-import { zonedTimeToUtc, utcToZonedTime, format } from 'date-fns-tz'
-import { addHours, isAfter, isBefore, addDays, startOfDay, addMinutes } from 'date-fns'
+import { toZonedTime, fromZonedTime, format } from 'date-fns-tz'
+import { isAfter, isBefore, addDays, addMinutes } from 'date-fns'
 
 export interface TimeBlock {
   start: Date
@@ -15,11 +15,11 @@ export interface AvailabilitySlot {
 }
 
 export function convertToUtc(date: Date, timezone: string): Date {
-  return zonedTimeToUtc(date, timezone)
+  return fromZonedTime(date, timezone)
 }
 
 export function convertFromUtc(date: Date, timezone: string): Date {
-  return utcToZonedTime(date, timezone)
+  return toZonedTime(date, timezone)
 }
 
 export function findOverlappingTimeBlocks(
@@ -67,7 +67,7 @@ export function findOverlappingTimeBlocks(
     // Count how many users are available for this entire time block
     let availableUsers = 0
     
-    for (const [userId, userAvails] of userAvailabilities) {
+    for (const [, userAvails] of userAvailabilities) {
       const isAvailable = userAvails.some(av => 
         !isAfter(startTime, av.endTime) && 
         !isBefore(endTime, av.startTime)

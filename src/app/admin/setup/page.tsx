@@ -1,15 +1,17 @@
 'use client'
 
 import { useState } from 'react'
-import { generateObject } from 'ai'
-import { openai } from '@ai-sdk/openai'
-import { z } from 'zod'
+// Temporarily disabled for deployment
+// import { generateObject } from 'ai'
+// import { openai } from '@ai-sdk/openai'
+// import { z } from 'zod'
 
-const DateRangeSchema = z.object({
-  startDate: z.string(),
-  endDate: z.string(),
-  reasoning: z.string()
-})
+// Temporarily disabled for deployment
+// const DateRangeSchema = z.object({
+//   startDate: z.string(),
+//   endDate: z.string(),
+//   reasoning: z.string()
+// })
 
 export default function AdminSetup() {
   const [step, setStep] = useState(1)
@@ -25,7 +27,7 @@ export default function AdminSetup() {
     aiSuggestion: ''
   })
   const [loading, setLoading] = useState(false)
-  const [aiSuggestion, setAiSuggestion] = useState<any>(null)
+  const [aiSuggestion, setAiSuggestion] = useState<{startDate: string, endDate: string, reasoning: string} | null>(null)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
@@ -37,31 +39,20 @@ export default function AdminSetup() {
   const getAiDateSuggestion = async () => {
     setLoading(true)
     try {
-      const { object } = await generateObject({
-        model: openai('gpt-4o-mini'),
-        schema: DateRangeSchema,
-        prompt: `You are helping schedule quarterly team meetings. Based on the following information, suggest an optimal date range for scheduling 3 consecutive days of 3.5-hour meetings:
-
-Meeting Title: ${formData.title}
-Description: ${formData.description}
-Current Date: ${new Date().toISOString().split('T')[0]}
-Admin Timezone: ${formData.adminTimezone}
-
-Consider:
-- Avoiding major holidays
-- Quarterly spacing (every 3 months)
-- Business days preferred
-- 2-3 week notice period for team coordination
-
-Provide a 2-3 week window where the meetings could be scheduled, starting about 3-4 weeks from now.`
-      })
+      // Temporarily disabled AI integration for deployment
+      // Mock AI suggestion for now
+      const mockSuggestion = {
+        startDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        endDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        reasoning: "AI suggestions temporarily disabled. Please manually select your preferred date range for the meetings."
+      }
       
-      setAiSuggestion(object)
+      setAiSuggestion(mockSuggestion)
       setFormData({
         ...formData,
-        dateRangeStart: object.startDate,
-        dateRangeEnd: object.endDate,
-        aiSuggestion: object.reasoning
+        dateRangeStart: mockSuggestion.startDate,
+        dateRangeEnd: mockSuggestion.endDate,
+        aiSuggestion: mockSuggestion.reasoning
       })
     } catch (error) {
       console.error('AI suggestion failed:', error)
