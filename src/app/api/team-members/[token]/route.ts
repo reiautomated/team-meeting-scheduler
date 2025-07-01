@@ -10,8 +10,8 @@ export async function GET(
 
     const teamMember = await prisma.teamMember.findFirst({
       where: { 
-        inviteToken: token,
-        role: 'member' // Only allow access via token for regular members
+        inviteToken: token
+        // Allow both admin and member roles to access via token
       },
       include: {
         user: true,
@@ -87,8 +87,8 @@ export async function PATCH(
 
     const teamMember = await prisma.teamMember.findFirst({
       where: { 
-        inviteToken: token,
-        role: 'member'
+        inviteToken: token
+        // Allow both admin and member roles to access via token
       },
       include: {
         meetingSeries: true

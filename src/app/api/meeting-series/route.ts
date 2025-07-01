@@ -51,15 +51,31 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    // Add admin as team member with admin role
+    // Add admin as team member with admin role and invite token
+    const adminInviteToken = generateInviteToken()
     await prisma.teamMember.create({
       data: {
         userId: adminUser.id,
         meetingSeriesId: meetingSeries.id,
         role: 'admin',
-        hasResponded: true
+        inviteToken: adminInviteToken,
+        hasResponded: false
       }
     })
+
+    // Send availability request to admin as well
+    const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : process.env.BASE_URL
+    const adminAvailabilityUrl = `${baseUrl}/availability/${adminInviteToken}`
+    await emailService.sendAvailabilityRequest(
+      adminUser.email,
+      adminUser.name,
+      meetingSeries.title,
+      { 
+        start: new Date(validatedData.dateRangeStart).toLocaleDateString(),
+        end: new Date(validatedData.dateRangeEnd).toLocaleDateString()
+      },
+      adminAvailabilityUrl
+    )
 
     // Parse team member emails and create team members
     const emailList = validatedData.teamEmails
