@@ -48,11 +48,11 @@ export default function AvailabilityPage() {
       <div className="max-w-4xl mx-auto px-4">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">{meetingSeries.title}</h1>
-          <p className="text-gray-600 mb-6">{meetingSeries.description}</p>
+          <p className="text-gray-800 mb-6">{meetingSeries.description}</p>
           
           <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-md mb-8">
-            <h2 className="font-bold text-blue-900">Instructions</h2>
-            <p className="text-blue-800">
+            <h2 className="font-bold text-blue-950">Instructions</h2>
+            <p className="text-blue-900">
               Please select your available time slots between{' '}
               <strong>{new Date(meetingSeries.dateRangeStart).toLocaleDateString()}</strong> and{' '}
               <strong>{new Date(meetingSeries.dateRangeEnd).toLocaleDateString()}</strong>.

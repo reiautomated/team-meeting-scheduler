@@ -51,11 +51,11 @@ export default function VoteForm({ meetingSchedules, token }: VoteFormProps) {
       <div className="space-y-6">
         {options.map(option => (
           <div key={option.id} className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="font-bold text-lg text-gray-800">Option {option.id}</h3>
-            <p className="text-sm text-gray-600 mb-3">{option.schedule.reasoning}</p>
+            <h3 className="font-bold text-lg text-gray-900">Option {option.id}</h3>
+            <p className="text-sm text-gray-700 mb-3">{option.schedule.reasoning}</p>
             <ul className="space-y-2">
               {option.schedule.meetings.map((meeting: any, index: number) => (
-                <li key={index} className="text-sm text-gray-700">
+                <li key={index} className="text-sm text-gray-800">
                   <strong>Meeting {index + 1}:</strong>{' '}
                   {new Date(meeting.startTime).toLocaleString()} - {new Date(meeting.endTime).toLocaleString()}
                 </li>
@@ -67,7 +67,7 @@ export default function VoteForm({ meetingSchedules, token }: VoteFormProps) {
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">First Choice</label>
+          <label className="block text-sm font-medium text-gray-800 mb-2">First Choice</label>
           <select
             onChange={e => setFirstChoice(Number(e.target.value))}
             className="w-full px-3 py-2 border border-gray-300 rounded-md"
@@ -77,7 +77,7 @@ export default function VoteForm({ meetingSchedules, token }: VoteFormProps) {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Second Choice</label>
+          <label className="block text-sm font-medium text-gray-800 mb-2">Second Choice</label>
           <select
             onChange={e => setSecondChoice(Number(e.target.value))}
             className="w-full px-3 py-2 border border-gray-300 rounded-md"
@@ -87,7 +87,7 @@ export default function VoteForm({ meetingSchedules, token }: VoteFormProps) {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Third Choice</label>
+          <label className="block text-sm font-medium text-gray-800 mb-2">Third Choice</label>
           <select
             onChange={e => setThirdChoice(Number(e.target.value))}
             className="w-full px-3 py-2 border border-gray-300 rounded-md"

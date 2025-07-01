@@ -47,7 +47,7 @@ export default function VotePage() {
       <div className="max-w-4xl mx-auto px-4">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Vote on Meeting Times</h1>
-          <p className="text-gray-600 mb-8">
+          <p className="text-gray-800 mb-8">
             Please review the proposed schedules and vote for your preferred options.
           </p>
 

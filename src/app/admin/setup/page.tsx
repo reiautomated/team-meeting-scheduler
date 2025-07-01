@@ -166,7 +166,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                 </div>
               ))}
             </div>
-            <div className="flex justify-between mt-2 text-sm text-gray-600">
+            <div className="flex justify-between mt-2 text-sm text-gray-800">
               <span>Basic Info</span>
               <span>Date Range</span>
               <span>Team Members</span>
@@ -177,7 +177,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
             {step === 1 && (
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-800 mb-2">
                     Meeting Series Title
                   </label>
                   <input
@@ -192,7 +192,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-800 mb-2">
                     Description
                   </label>
                   <textarea
@@ -206,7 +206,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-800 mb-2">
                     Your Name
                   </label>
                   <input
@@ -220,7 +220,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-800 mb-2">
                     Your Email
                   </label>
                   <input
@@ -234,7 +234,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-800 mb-2">
                     Your Timezone
                   </label>
                   <select
@@ -264,15 +264,15 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
             {step === 2 && (
               <div className="space-y-6">
                 <div className="bg-blue-50 p-4 rounded-md">
-                  <h3 className="text-lg font-medium text-blue-900 mb-2">Date Range Selection</h3>
-                  <p className="text-blue-800">
+                  <h3 className="text-lg font-medium text-blue-950 mb-2">Date Range Selection</h3>
+                  <p className="text-blue-900">
                     Choose a date range when your team meetings could be scheduled. Team members will select their availability within this range, and AI will analyze all responses to suggest optimal meeting times.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-800 mb-2">
                       Date Range Start
                     </label>
                     <input
@@ -285,7 +285,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-800 mb-2">
                       Date Range End
                     </label>
                     <input
@@ -310,8 +310,8 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
 
                 {aiSuggestion && (
                   <div className="bg-indigo-50 p-4 rounded-md">
-                    <h4 className="font-medium text-indigo-900 mb-2">AI Suggestion</h4>
-                    <p className="text-indigo-800 text-sm">{aiSuggestion.reasoning}</p>
+                    <h4 className="font-medium text-indigo-950 mb-2">AI Suggestion</h4>
+                    <p className="text-indigo-900 text-sm">{aiSuggestion.reasoning}</p>
                   </div>
                 )}
 
@@ -319,7 +319,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
                   <button
                     type="button"
                     onClick={() => setStep(1)}
-                    className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors"
+                    className="flex-1 bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors"
                   >
                     Back
                   </button>
@@ -337,7 +337,7 @@ Provide a 2-3 week window where the meetings could be scheduled, starting about 
             {step === 3 && (
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-800 mb-2">
                     Team Member Emails
                   </label>
                   <textarea
@@ -352,14 +352,14 @@ sarah@company.com
 mike@company.com"
                     required
                   />
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-gray-800 mt-1">
                     Each team member will receive an email invitation to select their availability.
                   </p>
                 </div>
 
                 <div className="bg-yellow-50 p-4 rounded-md">
-                  <h4 className="font-medium text-yellow-900 mb-2">Meeting Details Summary</h4>
-                  <ul className="text-yellow-800 space-y-1 text-sm">
+                  <h4 className="font-medium text-yellow-950 mb-2">Meeting Details Summary</h4>
+                  <ul className="text-yellow-900 space-y-1 text-sm">
                     <li>• 3 meetings, each 3.5 hours long</li>
                     <li>• Preferably on consecutive days</li>
                     <li>• Google Calendar events will be created automatically</li>
@@ -371,7 +371,7 @@ mike@company.com"
                   <button
                     type="button"
                     onClick={() => setStep(2)}
-                    className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors"
+                    className="flex-1 bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors"
                   >
                     Back
                   </button>

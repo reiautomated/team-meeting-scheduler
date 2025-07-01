@@ -89,12 +89,12 @@ export default function AvailabilityCalendar({
           />
         </div>
         <div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Select Time Slots</h3>
+          <h3 className="text-xl font-semibold text-gray-900 mb-4">Select Time Slots</h3>
           <div className="space-y-4">
             {selectedDays.length > 0 ? (
               selectedDays.map(day => (
                 <div key={day.toISOString()}>
-                  <h4 className="font-medium text-gray-700">{day.toLocaleDateString()}</h4>
+                  <h4 className="font-medium text-gray-800">{day.toLocaleDateString()}</h4>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {timeOptions.map(time => (
                       <button
@@ -103,7 +103,7 @@ export default function AvailabilityCalendar({
                         className={`px-3 py-1 rounded-full text-sm ${
                           selectedTimeSlots.some(slot => slot.day.getTime() === day.getTime() && slot.time === time)
                             ? 'bg-blue-600 text-white'
-                            : 'bg-gray-200 text-gray-700'
+                            : 'bg-gray-200 text-gray-800'
                         }`}
                       >
                         {time}
@@ -113,7 +113,7 @@ export default function AvailabilityCalendar({
                 </div>
               ))
             ) : (
-              <p className="text-gray-500">Please select one or more days from the calendar.</p>
+              <p className="text-gray-600">Please select one or more days from the calendar.</p>
             )}
           </div>
         </div>
