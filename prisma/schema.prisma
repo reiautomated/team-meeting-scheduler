@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  timezone  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  meetingSeries     MeetingSeries[]
+  availabilities    Availability[]
+  teamMemberships   TeamMember[]
+
+  @@map("users")
+}
+
+model MeetingSeries {
+  id                String   @id @default(cuid())
+  title             String
+  description       String?
+  adminId           String
+  admin             User     @relation(fields: [adminId], references: [id])
+  dateRangeStart    DateTime
+  dateRangeEnd      DateTime
+  meetingDuration   Int      // in minutes (3.5 hours = 210 minutes)
+  numberOfMeetings  Int      @default(3)
+  consecutiveDays   Boolean  @default(true)
+  status            String   @default("setup") // setup, collecting, analyzing, scheduled, completed
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  teamMembers       TeamMember[]
+  meetings          Meeting[]
+  availabilities    Availability[]
+
+  @@map("meeting_series")
+}
+
+model TeamMember {
+  id              String        @id @default(cuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+  meetingSeriesId String
+  meetingSeries   MeetingSeries @relation(fields: [meetingSeriesId], references: [id])
+  role            String        @default("member") // admin, member
+  inviteToken     String?       @unique
+  hasResponded    Boolean       @default(false)
+  createdAt       DateTime      @default(now())
+
+  @@unique([userId, meetingSeriesId])
+  @@map("team_members")
+}
+
+model Meeting {
+  id              String        @id @default(cuid())
+  meetingSeriesId String
+  meetingSeries   MeetingSeries @relation(fields: [meetingSeriesId], references: [id])
+  startTime       DateTime
+  endTime         DateTime
+  title           String
+  description     String?
+  calendarEventId String?
+  sequence        Int           // 1, 2, 3 for the three meetings
+  createdAt       DateTime      @default(now())
+
+  @@map("meetings")
+}
+
+model Availability {
+  id              String        @id @default(cuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+  meetingSeriesId String
+  meetingSeries   MeetingSeries @relation(fields: [meetingSeriesId], references: [id])
+  startTime       DateTime
+  endTime         DateTime
+  timezone        String
+  createdAt       DateTime      @default(now())
+
+  @@map("availabilities")
+}
