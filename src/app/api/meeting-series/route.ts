@@ -90,7 +90,8 @@ export async function POST(request: NextRequest) {
           }
         })
 
-        const availabilityUrl = `${process.env.BASE_URL}/availability/${inviteToken}`
+        const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : process.env.BASE_URL
+        const availabilityUrl = `${baseUrl}/availability/${inviteToken}`
         await emailService.sendAvailabilityRequest(
           user.email,
           user.name,
