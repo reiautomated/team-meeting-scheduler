@@ -43,6 +43,19 @@ export default function AvailabilityPage() {
     return <div className="min-h-screen bg-gray-50 flex items-center justify-center text-red-500">{error}</div>
   }
 
+  if (meetingSeries && meetingSeries.status !== 'collecting') {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="max-w-md mx-auto text-center bg-white p-8 rounded-lg shadow-md">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">Submissions Closed</h1>
+          <p className="text-gray-600">
+            This meeting series is no longer accepting new availability submissions. It is currently in the '{meetingSeries.status}' phase.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-4xl mx-auto px-4">
