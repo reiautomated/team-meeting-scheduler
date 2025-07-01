@@ -30,8 +30,8 @@ export async function GET(
       )
     }
 
-    // Check if meeting series is still in setup phase
-    if (teamMember.meetingSeries.status !== 'setup') {
+    // Check if meeting series is still in collecting phase
+    if (teamMember.meetingSeries.status !== 'collecting') {
       return NextResponse.json(
         { success: false, error: 'This meeting series is no longer accepting responses' },
         { status: 400 }
@@ -102,8 +102,8 @@ export async function PATCH(
       )
     }
 
-    // Check if meeting series is still in setup phase
-    if (teamMember.meetingSeries.status !== 'setup') {
+    // Check if meeting series is still in collecting phase
+    if (teamMember.meetingSeries.status !== 'collecting') {
       return NextResponse.json(
         { success: false, error: 'This meeting series is no longer accepting updates' },
         { status: 400 }
